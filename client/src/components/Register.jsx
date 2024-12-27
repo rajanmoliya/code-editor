@@ -13,7 +13,7 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5000/auth/signup", {
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/signup`, {
         name,
         email,
         password,
