@@ -10,7 +10,11 @@ const { auth } = require("./middlewares/auth.middleware");
 
 
 const app = express();
-app.use(cors());
+app.use(cors(
+  {
+    origin: ['http://localhost:5173', 'https://ide.rajanmoliya.me'],
+  }
+));
 app.use(express.json());
 
 connectDB().catch((err) => console.error("MongoDB connection error:", err));
