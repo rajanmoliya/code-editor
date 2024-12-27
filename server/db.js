@@ -2,7 +2,8 @@ const mongoose = require("mongoose");
 
 const connectDB = async () => {
   try {
-    await mongoose.connect("mongodb://localhost:27017/code-editor");
+    const mongoURI = process.env.MONGO_URI;
+    await mongoose.connect(mongoURI, {});
     console.log("MongoDB connected");
   } catch (error) {
     console.error("MongoDB connection error:", error);

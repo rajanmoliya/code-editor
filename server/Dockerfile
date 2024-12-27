@@ -1,6 +1,6 @@
 FROM node:18
 
-WORKDIR /rajan/src/server
+WORKDIR /usr/src/server
 
 COPY package*.json ./
 

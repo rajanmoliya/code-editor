@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
@@ -6,6 +7,7 @@ const connectDB = require("./db");
 const User = require("./models/User");
 const File = require("./models/File");
 const { auth } = require("./middlewares/auth.middleware");
+
 
 const app = express();
 app.use(cors());
