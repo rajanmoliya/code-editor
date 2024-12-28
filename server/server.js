@@ -3,7 +3,6 @@ import dotenv from "dotenv";
 import signup from "./api/auth/signup.js";
 import login from "./api/auth/login.js";
 import filesIndex from "./api/files/index.js";
-import fileById from "./api/files/[id].js";
 import execute from "./api/execute.js";
 import health from "./api/health.js";
 import cors from "cors";
@@ -24,11 +23,9 @@ app.use(express.json());
 app.use("/api/auth/signup", signup);
 app.use("/api/auth/login", login);
 app.use("/api/files", filesIndex);
-app.use("/api/files/:id", fileById);
 app.use("/api/execute", execute);
 app.use("/api/health", health);
 
-// Start the server
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });

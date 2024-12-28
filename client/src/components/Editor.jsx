@@ -125,7 +125,7 @@ function Editor() {
     if (!currentFile) return;
 
     try {
-      const response = await api.put(`/files/${currentFile._id}`, {
+      const response = await api.put(`/files?id=${currentFile._id}`, {
         content: currentFile.content,
       });
       setFiles(
@@ -151,7 +151,7 @@ function Editor() {
     if (!confirm("Are you sure you want to delete this file?")) return;
 
     try {
-      await api.delete(`/files/${fileId}`);
+      await api.delete(`/files?id=${fileId}`);
       setFiles(files.filter((f) => f._id !== fileId));
       if (currentFile?._id === fileId) {
         setCurrentFile(null);
