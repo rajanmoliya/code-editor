@@ -1,6 +1,6 @@
-import connectDB from "../../db";
-import File from "../../models/File";
-import { auth } from "../../middlewares/auth.middleware";
+import connectDB from "../../db.js";
+import File from "../../models/File.js";
+import { auth } from "../../middlewares/auth.middleware.js";
 
 export default async function handler(req, res) {
   await connectDB();
