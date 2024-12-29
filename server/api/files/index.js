@@ -7,14 +7,14 @@ export default async function handler(req, res) {
 
   if (req.method === "GET") {
     return auth(req, res, async () => {
-      const files = await File.find({ userId: req.user._id });
+      const files = await File.find({ userId: req.user.userId });
       res.json(files);
     });
   }
 
   if (req.method === "POST") {
     return auth(req, res, async () => {
-      const file = new File({ ...req.body, userId: req.user._id });
+      const file = new File({ ...req.body, userId: req.user.userId });
       await file.save();
       res.json(file);
     });
@@ -24,7 +24,7 @@ export default async function handler(req, res) {
     return auth(req, res, async () => {
       const { id } = req.query;
       const file = await File.findOneAndUpdate(
-        { _id: id, userId: req.user._id },
+        { _id: id, userId: req.user.userId },
         { ...req.body, lastModified: new Date() },
         { new: true }
       );
@@ -38,7 +38,7 @@ export default async function handler(req, res) {
       const { id } = req.query;
       const file = await File.findOneAndDelete({
         _id: id,
-        userId: req.user._id,
+        userId: req.user.userId,
       });
       if (!file) return res.status(404).json({ error: "File not found" });
       res.json({ message: "File deleted successfully" });

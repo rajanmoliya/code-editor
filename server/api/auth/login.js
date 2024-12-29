@@ -18,7 +18,7 @@ export default async function handler(req, res) {
     if (!isMatch) throw new Error("Invalid credentials");
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
-    res.json({ user: { id: user._id, email }, token });
+    res.json({ user: { id: user._id, email, name: user.name }, token });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
-import MonacoEditor from "@monaco-editor/react";
 import axios from "axios";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { toast, Zoom } from "react-toastify";
-import { SiPython, SiJavascript, SiCplusplus } from "react-icons/si";
-import { MdDelete } from "react-icons/md";
-import { IoMdDownload } from "react-icons/io";
+
+import Sidebar from "./Sidebar";
+import MonacoEditorWrapper from "./MonacoEditorWrapper";
+import EditorControls from "./EditorControls";
+import Output from "./Output";
+import Modal from "./Modal";
 
 function Editor() {
   const { user, logout } = useAuth();
@@ -19,12 +21,6 @@ function Editor() {
   const [newFileName, setNewFileName] = useState("");
   const [newFileType, setNewFileType] = useState("javascript");
 
-  const fileTypeIconMap = {
-    javascript: <SiJavascript className="text-yellow-400" />,
-    python: <SiPython className="text-blue-400" />,
-    cpp: <SiCplusplus className="text-green-400" />,
-  };
-
   const api = axios.create({
     baseURL: import.meta.env.VITE_BACKEND_URL,
     headers: {
@@ -32,9 +28,18 @@ function Editor() {
     },
   });
 
+  // Modified useEffect to select the latest file after fetching
   useEffect(() => {
     fetchFiles();
   }, []);
+
+  // New useEffect to handle selecting the latest file
+  useEffect(() => {
+    if (files.length > 0 && !currentFile) {
+      const latestFile = files[files.length - 1];
+      setCurrentFile(latestFile);
+    }
+  }, [files]);
 
   useEffect(() => {
     const handleSave = (e) => {
@@ -58,7 +63,6 @@ function Editor() {
     return () => window.removeEventListener("keydown", handleRun);
   }, [currentFile]);
 
-  // short cut for creating new file ctrl + n
   useEffect(() => {
     const handleNewFile = (e) => {
       if (e.altKey && e.key === "n") {
@@ -112,7 +116,9 @@ function Editor() {
         language: newFileType,
         content: "",
       });
-      setFiles([...files, response.data]);
+      const newFile = response.data;
+      setFiles([...files, newFile]);
+      setCurrentFile(newFile); // Automatically select the new file
       setShowModal(false);
       setNewFileName("");
       setNewFileType("javascript");
@@ -154,7 +160,12 @@ function Editor() {
       await api.delete(`/files?id=${fileId}`);
       setFiles(files.filter((f) => f._id !== fileId));
       if (currentFile?._id === fileId) {
-        setCurrentFile(null);
+        const remainingFiles = files.filter((f) => f._id !== fileId);
+        setCurrentFile(
+          remainingFiles.length > 0
+            ? remainingFiles[remainingFiles.length - 1]
+            : null
+        );
       }
     } catch (error) {
       alert("Error deleting file", error.message);
@@ -182,165 +193,55 @@ function Editor() {
 
   return (
     <div className="h-screen flex bg-gray-100">
-      {/* Sidebar */}
-      <div className="w-64 bg-gray-800 text-white flex flex-col">
-        <div className="flex-1 p-4">
-          <div className="flex justify-between items-center mb-4">
-            <span className="font-bold text-lg">My Files</span>
-            <button
-              className="bg-green-500 px-3 py-1 rounded hover:bg-green-600"
-              onClick={() => setShowModal(true)}
-            >
-              + New
-            </button>
-          </div>
-          <div className="space-y-2">
-            {files.map((file) => (
-              <div
-                key={file._id}
-                className={`flex items-center justify-between p-2 rounded cursor-pointer ${
-                  currentFile?._id === file._id
-                    ? "bg-gray-700"
-                    : "hover:bg-gray-700"
-                }`}
-                onClick={() => setCurrentFile(file)}
-              >
-                <span className="flex items-center">
-                  <span className="mr-2">{fileTypeIconMap[file.language]}</span>
-                  {file.name}
-                </span>
-                <button
-                  onClick={() => deleteFile(file._id)}
-                  className="text-red-400 hover:text-red-300"
-                >
-                  <MdDelete />
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-        {/* Logout Button */}
-        <div className="p-4">
-          <button
-            onClick={logout}
-            className="w-full bg-red-500 px-4 py-2 rounded hover:bg-red-600"
-          >
-            Logout
-          </button>
-        </div>
-      </div>
-
-      {/* Main Content */}
+      <Sidebar
+        user={user}
+        files={files}
+        setFiles={setFiles}
+        currentFile={currentFile}
+        setCurrentFile={setCurrentFile}
+        logout={logout}
+        navigate={navigate}
+        setShowModal={setShowModal}
+        deleteFile={deleteFile}
+      />
       <div className="flex-1 flex flex-col">
         {currentFile ? (
           <>
-            {/* Editor Controls */}
-            <div className="bg-gray-700 text-white p-4 flex justify-between items-center">
-              <div>{currentFile.name}</div>
-              <div className="space-x-2">
-                <a
-                  href={`data:text/plain;charset=utf-8,${encodeURIComponent(
-                    currentFile.content
-                  )}`}
-                  download={currentFile.name}
-                  className="bg-gray-500 px-4 py-[9.5px] rounded hover:bg-gray-600 "
-                >
-                  <button>
-                    <IoMdDownload />
-                  </button>
-                </a>
-                <button
-                  className="bg-blue-500 px-4 py-2 rounded hover:bg-blue-600"
-                  onClick={saveFile}
-                >
-                  Save
-                </button>
-                <button
-                  className="bg-green-500 px-4 py-2 rounded hover:bg-green-600"
-                  onClick={executeCode}
-                  disabled={isExecuting}
-                >
-                  {isExecuting ? "Running..." : "Run"}
-                </button>
-              </div>
-            </div>
-
-            {/* Editor */}
-            <div className="flex-1">
-              <MonacoEditor
-                height="60vh"
-                language={currentFile.language}
-                value={currentFile.content}
-                onChange={(value) =>
-                  setCurrentFile({
-                    ...currentFile,
-                    content: value,
-                  })
-                }
-                theme="vs-dark"
-                options={{
-                  fontSize: 16,
-                  wordWrap: "on",
-                }}
-              />
-            </div>
-
-            {/* Output */}
-            <div className="h-[30vh] bg-black text-white p-4 overflow-auto">
-              <div className="font-bold mb-2">Output:</div>
-              <pre>{output}</pre>
-            </div>
+            <EditorControls
+              currentFile={currentFile}
+              saveFile={saveFile}
+              executeCode={executeCode}
+              isExecuting={isExecuting}
+            />
+            <MonacoEditorWrapper
+              currentFile={currentFile}
+              setCurrentFile={setCurrentFile}
+            />
+            <Output output={output} />
           </>
         ) : (
           <div className="flex-1 flex flex-col items-center justify-center text-gray-600">
-            <p className="text-lg">Select or create a file to start coding</p>
+            <p className="text-lg">Select or Create a file to start coding</p>
+            <p>
+              <button
+                className="px-4 py-2 mt-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+                onClick={() => setShowModal(true)}
+              >
+                Create New File
+              </button>
+            </p>
           </div>
         )}
       </div>
-
-      {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-            <h3 className="text-xl font-semibold text-gray-800 mb-4">
-              Create New File
-            </h3>
-
-            <div className="flex items-center space-x-4 mb-4">
-              <input
-                type="text"
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                placeholder="File Name"
-                value={newFileName}
-                onChange={(e) => setNewFileName(e.target.value)}
-                autoFocus
-              />
-              <select
-                className="w-1/3 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                value={newFileType}
-                onChange={(e) => setNewFileType(e.target.value)}
-              >
-                <option value="javascript">.js</option>
-                <option value="python">.py</option>
-                <option value="cpp">.cpp</option>
-              </select>
-            </div>
-            <div className="flex justify-end space-x-4">
-              <button
-                className="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
-                onClick={() => setShowModal(false)}
-              >
-                Cancel
-              </button>
-              <button
-                className="px-4 py-2 text-white bg-green-600 rounded-lg hover:bg-green-700 transition"
-                onClick={createFile}
-              >
-                Create
-              </button>
-            </div>
-          </div>
-        </div>
+        <Modal
+          setShowModal={setShowModal}
+          newFileName={newFileName}
+          setNewFileName={setNewFileName}
+          newFileType={newFileType}
+          setNewFileType={setNewFileType}
+          createFile={createFile}
+        />
       )}
     </div>
   );
