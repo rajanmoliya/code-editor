@@ -1,4 +1,3 @@
-import { auth } from "../middlewares/auth.middleware.js";
 import { exec } from "child_process";
 import fs from "fs/promises";
 

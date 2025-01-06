@@ -16,10 +16,8 @@ app.use(
   cors({ origin: ["http://localhost:5173", "https://ide.rajanmoliya.me"] })
 );
 
-// Middleware to parse JSON request bodies
 app.use(express.json());
 
-// Mimic Vercel's API folder structure
 app.use("/api/auth/signup", signup);
 app.use("/api/auth/login", login);
 app.use("/api/files", filesIndex);
