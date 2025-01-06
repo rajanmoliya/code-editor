@@ -7,7 +7,9 @@ const UserProfile = ({ user, filesCount, logout }) => {
         {/* Left section - Avatar and User Info */}
         <div className="flex items-center gap-3 flex-1 min-w-0">
           <div className="h-10 w-10 bg-gray-600 rounded-full flex items-center justify-center flex-shrink-0">
-            <span className="text-lg font-medium">{user?.user.name[0]}</span>
+            <span className="text-lg font-medium">
+              {user?.user.name[0].toUpperCase()}
+            </span>
           </div>
 
           <div className="flex flex-col min-w-0">
