@@ -12,8 +12,8 @@ export default async function handler(req, res) {
   const fileExtensions = { javascript: "js", python: "py", cpp: "cpp" };
   const commands = {
     javascript: `node ${filename}.js`,
-    python: `python ${filename}.py`,
-    cpp: `g++ ${filename}.cpp -o ${filename}.exe && ${filename}.exe`,
+    python: `python3 ${filename}.py`,
+    cpp: `g++ ./${filename}.cpp -o ./${filename}.out && ./${filename}.out`,
   };
 
   try {
@@ -21,7 +21,7 @@ export default async function handler(req, res) {
     exec(commands[language], async (error, stdout, stderr) => {
       await fs.unlink(`${filename}.${fileExtensions[language]}`);
       if (language === "cpp") {
-        await fs.unlink(`${filename}.exe`).catch(() => {});
+        await fs.unlink(`${filename}.out`).catch(() => {});
       }
 
       if (error) return res.status(500).json({ error: stderr });
