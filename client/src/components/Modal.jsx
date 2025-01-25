@@ -6,6 +6,17 @@ function Modal({
   setNewFileType,
   createFile,
 }) {
+  const languageOptions = [
+    { value: "javascript", label: ".js" },
+    { value: "python", label: ".py" },
+    { value: "cpp", label: ".cpp" },
+    { value: "rust", label: ".rs" },
+    { value: "java", label: ".java" },
+    { value: "kotlin", label: ".kt" },
+    { value: "go", label: ".go" },
+    { value: "haskell", label: ".hs" },
+  ];
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-11/12 sm:w-96">
@@ -26,9 +37,11 @@ function Modal({
             value={newFileType}
             onChange={(e) => setNewFileType(e.target.value)}
           >
-            <option value="javascript">.js</option>
-            <option value="python">.py</option>
-            <option value="cpp">.cpp</option>
+            {languageOptions.map((lang) => (
+              <option key={lang.value} value={lang.value}>
+                {lang.label}
+              </option>
+            ))}
           </select>
         </div>
         <div className="flex justify-end space-x-4">

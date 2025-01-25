@@ -1,5 +1,14 @@
 import { MdDelete } from "react-icons/md";
-import { SiPython, SiJavascript, SiCplusplus } from "react-icons/si";
+import {
+  SiPython,
+  SiJavascript,
+  SiCplusplus,
+  SiKotlin,
+  SiGoland,
+  SiHaskell,
+  SiRust,
+} from "react-icons/si";
+import { FaJava } from "react-icons/fa";
 import UserProfile from "./UserProfile";
 import { useState, useEffect, useRef } from "react";
 
@@ -20,6 +29,11 @@ function Sidebar({
     javascript: <SiJavascript className="text-yellow-400" />,
     python: <SiPython className="text-blue-400" />,
     cpp: <SiCplusplus className="text-green-400" />,
+    rust: <SiRust className="text-red-400" />,
+    java: <FaJava className="text-red-400" />,
+    kotlin: <SiKotlin className="text-blue-400" />,
+    go: <SiGoland className="text-blue-400" />,
+    haskell: <SiHaskell className="text-blue-400" />,
   };
 
   // Close sidebar when clicking outside

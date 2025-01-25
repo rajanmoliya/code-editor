@@ -1,25 +1,57 @@
+# Base Node.js image for web server and core functionality
 FROM node:18
 
+# Install system-wide dependencies
 RUN apt-get update && apt-get install -y \
     python3 \
     python3-pip \
     build-essential \
     gcc \
     g++ \
+    openjdk-17-jdk \
+    curl \
+    wget \
+    ghc \
+    unzip \
+    git \
     && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p /usr/src/server/temp && \
-    chmod 777 /usr/src/server/temp
+# Install Rust
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+ENV PATH="/root/.cargo/bin:${PATH}"
 
+# Install Go
+RUN wget https://golang.org/dl/go1.21.5.linux-amd64.tar.gz && \
+    tar -C /usr/local -xzf go1.21.5.linux-amd64.tar.gz && \
+    rm go1.21.5.linux-amd64.tar.gz
+ENV PATH="/usr/local/go/bin:${PATH}"
+
+# Install Kotlin Compiler
+RUN wget https://github.com/JetBrains/kotlin/releases/download/v1.9.20/kotlin-compiler-1.9.20.zip && \
+    unzip kotlin-compiler-1.9.20.zip -d /opt/kotlin && \
+    rm kotlin-compiler-1.9.20.zip
+ENV PATH="/opt/kotlin/kotlinc/bin:${PATH}"
+
+# Install Haskell via GHCup
+RUN curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | BOOTSTRAP_HASKELL_NONINTERACTIVE=1 sh
+
+# Create temporary execution directory
+RUN mkdir -p /usr/src/server/temp && chmod 755 /usr/src/server/temp
+
+# Set working directory
 WORKDIR /usr/src/server
 
+# Copy package management files
 COPY package*.json ./
 
-RUN npm install
+# Install Node.js dependencies
+RUN npm ci --only=production
 
+# Copy application files
 COPY . .
 
+# Expose application port
 EXPOSE 5000
 
+# Default command to start the server
 CMD ["npm", "start"]
-

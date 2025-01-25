@@ -106,6 +106,11 @@ function Editor() {
       javascript: "js",
       python: "py",
       cpp: "cpp",
+      rust: "rs",
+      java: "java",
+      kotlin: "kt",
+      go: "go",
+      haskell: "hs",
     };
     const fileExtension = fileExtensionMap[newFileType];
     const fullName = `${newFileName}.${fileExtension}`;
@@ -185,7 +190,14 @@ function Editor() {
       });
       setOutput(response.data.output);
     } catch (error) {
-      setOutput(error.response?.data?.error || error.message);
+      const errorMessage = error.response?.data?.error || error.message;
+      setOutput(errorMessage);
+      toast.error("Execution failed", {
+        position: "top-center",
+        autoClose: 1500,
+        theme: "colored",
+        transition: Zoom,
+      });
     } finally {
       setIsExecuting(false);
     }
