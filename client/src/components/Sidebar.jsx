@@ -3,14 +3,13 @@ import {
   SiPython,
   SiJavascript,
   SiCplusplus,
-  SiKotlin,
   SiGoland,
   SiHaskell,
   SiRust,
   SiRuby,
   SiR,
+  SiPhp,
 } from "react-icons/si";
-import { FaJava, FaPhp } from "react-icons/fa";
 import UserProfile from "./UserProfile";
 import { useState, useEffect, useRef } from "react";
 
@@ -30,9 +29,9 @@ function Sidebar({
   const fileTypeIconMap = {
     javascript: <SiJavascript className="text-yellow-400" />,
     python: <SiPython className="text-blue-400" />,
-    cpp: <SiCplusplus className="text-green-400" />,
+    cpp: <SiCplusplus className="text-blue-400" />,
     rust: <SiRust className="text-red-400" />,
-    php: <FaPhp className="text-blue-400" />,
+    php: <SiPhp className="text-blue-400" />,
     ruby: <SiRuby className="text-red-400" />,
     r: <SiR className="text-blue-400" />,
     go: <SiGoland className="text-blue-400" />,
