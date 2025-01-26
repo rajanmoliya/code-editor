@@ -8,12 +8,14 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     gcc \
     g++ \
-    openjdk-17-jdk \
     curl \
     wget \
     ghc \
     unzip \
     git \
+    php \
+    ruby \
+    r-base \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Rust
@@ -26,17 +28,11 @@ RUN wget https://golang.org/dl/go1.21.5.linux-amd64.tar.gz && \
     rm go1.21.5.linux-amd64.tar.gz
 ENV PATH="/usr/local/go/bin:${PATH}"
 
-# Install Kotlin Compiler
-RUN wget https://github.com/JetBrains/kotlin/releases/download/v1.9.20/kotlin-compiler-1.9.20.zip && \
-    unzip kotlin-compiler-1.9.20.zip -d /opt/kotlin && \
-    rm kotlin-compiler-1.9.20.zip
-ENV PATH="/opt/kotlin/kotlinc/bin:${PATH}"
-
 # Install Haskell via GHCup
 RUN curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | BOOTSTRAP_HASKELL_NONINTERACTIVE=1 sh
 
 # Create temporary execution directory
-RUN mkdir -p /usr/src/server/temp && chmod 755 /usr/src/server/temp
+RUN mkdir -p /usr/src/server/temp && chmod 777 /usr/src/server/temp
 
 # Set working directory
 WORKDIR /usr/src/server

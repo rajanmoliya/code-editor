@@ -7,8 +7,10 @@ import {
   SiGoland,
   SiHaskell,
   SiRust,
+  SiRuby,
+  SiR,
 } from "react-icons/si";
-import { FaJava } from "react-icons/fa";
+import { FaJava, FaPhp } from "react-icons/fa";
 import UserProfile from "./UserProfile";
 import { useState, useEffect, useRef } from "react";
 
@@ -30,8 +32,9 @@ function Sidebar({
     python: <SiPython className="text-blue-400" />,
     cpp: <SiCplusplus className="text-green-400" />,
     rust: <SiRust className="text-red-400" />,
-    java: <FaJava className="text-red-400" />,
-    kotlin: <SiKotlin className="text-blue-400" />,
+    php: <FaPhp className="text-blue-400" />,
+    ruby: <SiRuby className="text-red-400" />,
+    r: <SiR className="text-blue-400" />,
     go: <SiGoland className="text-blue-400" />,
     haskell: <SiHaskell className="text-blue-400" />,
   };

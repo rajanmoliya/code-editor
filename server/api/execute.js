@@ -26,18 +26,20 @@ const LANGUAGE_CONFIGS = {
     cleanupFiles: ["{fileBase}"],
     timeout: 10000,
   },
-  java: {
-    extension: "java",
-    command: "javac {filePath} && java -cp {tempDir} {className}",
-    cleanupFiles: ["{className}.class"],
-    timeout: 10000,
-  },
-  kotlin: {
-    extension: "kt",
-    command:
-      "kotlinc {filePath} -include-runtime -d {fileBase}.jar && java -jar {fileBase}.jar",
-    cleanupFiles: ["{fileBase}.jar"],
+  php: {
+    extension: "php",
+    command: "php {filePath}",
     timeout: 8000,
+  },
+  ruby: {
+    extension: "rb",
+    command: "ruby {filePath}",
+    timeout: 8000,
+  },
+  r: {
+    extension: "r",
+    command: "Rscript {filePath}",
+    timeout: 10000,
   },
   go: {
     extension: "go",
@@ -74,17 +76,6 @@ export default async function handler(req, res) {
   const fileBase = path.join(tempDir, uniqueId);
 
   try {
-    // Handle Java class name extraction
-    let className = uniqueId; // Default class name
-    if (language === "java") {
-      const match = code.match(/public\s+class\s+(\w+)/);
-      if (match && match[1]) {
-        className = match[1];
-      } else {
-        throw new Error("No public class name found in Java code.");
-      }
-    }
-
     // Write code to the temp file
     await fs.writeFile(filePath, code, { mode: 0o600 });
 
@@ -92,8 +83,7 @@ export default async function handler(req, res) {
     const executeCommand = config.command
       .replace(/{filePath}/g, filePath)
       .replace(/{fileBase}/g, fileBase)
-      .replace(/{tempDir}/g, tempDir)
-      .replace(/{className}/g, className);
+      .replace(/{tempDir}/g, tempDir);
 
     console.log(`Executing command: ${executeCommand}`);
 
@@ -103,10 +93,11 @@ export default async function handler(req, res) {
       { timeout: config.timeout, maxBuffer: 1024 * 1024, cwd: tempDir },
       async (error, stdout, stderr) => {
         // Cleanup files
-        await cleanUpFiles(filePath, config.cleanupFiles, {
-          fileBase,
-          className,
-        });
+        try {
+          await cleanUpFiles(filePath, config.cleanupFiles, { fileBase });
+        } catch (cleanupError) {
+          console.error("Cleanup error:", cleanupError);
+        }
 
         if (error) {
           // Handle execution errors
@@ -138,12 +129,14 @@ async function cleanUpFiles(mainFile, cleanupFiles = [], placeholders = {}) {
 
     // Remove additional cleanup files
     for (const cleanupFile of cleanupFiles) {
-      const resolvedPath = cleanupFile
-        .replace(/{fileBase}/g, placeholders.fileBase)
-        .replace(/{className}/g, placeholders.className);
+      const resolvedPath = cleanupFile.replace(
+        /{fileBase}/g,
+        placeholders.fileBase
+      );
       await fs.unlink(resolvedPath).catch(() => {}); // Ignore errors
     }
   } catch (error) {
     console.error("Cleanup error:", error);
+    throw error; // Re-throw to handle in the main function
   }
 }

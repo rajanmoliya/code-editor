@@ -107,9 +107,10 @@ function Editor() {
       python: "py",
       cpp: "cpp",
       rust: "rs",
-      java: "java",
-      kotlin: "kt",
+      php: "php",
+      ruby: "rb",
       go: "go",
+      r: "r",
       haskell: "hs",
     };
     const fileExtension = fileExtensionMap[newFileType];

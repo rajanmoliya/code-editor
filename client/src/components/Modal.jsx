@@ -10,10 +10,11 @@ function Modal({
     { value: "javascript", label: ".js" },
     { value: "python", label: ".py" },
     { value: "cpp", label: ".cpp" },
-    { value: "rust", label: ".rs" },
-    { value: "java", label: ".java" },
-    { value: "kotlin", label: ".kt" },
     { value: "go", label: ".go" },
+    { value: "rust", label: ".rs" },
+    { value: "php", label: ".php" },
+    { value: "ruby", label: ".rb" },
+    { value: "r", label: ".r" },
     { value: "haskell", label: ".hs" },
   ];
 
