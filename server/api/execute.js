@@ -44,7 +44,7 @@ const LANGUAGE_CONFIGS = {
   go: {
     extension: "go",
     command: "go run {filePath}",
-    timeout: 8000,
+    timeout: 19000,
   },
   haskell: {
     extension: "hs",
