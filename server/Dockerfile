@@ -19,11 +19,11 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Go using the official Go installation script
-RUN curl -sSL https://go.dev/dl/go1.21.5.linux-amd64.tar.gz | tar -C /usr/local -xz
-ENV PATH="/usr/local/go/bin:${PATH}"
-ENV GOPATH="/go"
-ENV PATH="${GOPATH}/bin:${PATH}"
-RUN mkdir -p /go/src /go/bin /go/pkg && chmod -R 777 /go
+# RUN curl -sSL https://go.dev/dl/go1.21.5.linux-amd64.tar.gz | tar -C /usr/local -xz
+# ENV PATH="/usr/local/go/bin:${PATH}"
+# ENV GOPATH="/go"
+# ENV PATH="${GOPATH}/bin:${PATH}"
+# RUN mkdir -p /go/src /go/bin /go/pkg && chmod -R 777 /go
 
 # Install Rust
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
@@ -42,7 +42,8 @@ WORKDIR /usr/src/server
 COPY package*.json ./
 
 # Install Node.js dependencies
-RUN npm ci --only=production
+# RUN npm ci --only=production
+RUN npm install
 
 # Copy application files
 COPY . .
