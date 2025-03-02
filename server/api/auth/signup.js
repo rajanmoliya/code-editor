@@ -14,7 +14,7 @@ export default async function handler(req, res) {
     const hashedPassword = await bcrypt.hash(password, 8);
     const user = new User({ name, email, password: hashedPassword });
     await user.save();
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
+    const token = jwt.sign({ userId: user._id, name }, process.env.JWT_SECRET);
     res.json({ user: { id: user._id, email, name }, token });
   } catch (error) {
     res.status(400).json({ error: error.message });

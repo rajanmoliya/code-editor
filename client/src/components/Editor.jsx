@@ -9,9 +9,12 @@ import MonacoEditorWrapper from "./MonacoEditorWrapper";
 import EditorControls from "./EditorControls";
 import Output from "./Output";
 import Modal from "./Modal";
+import PrivateChat from "./PrivateChat";
+
+import { FiMessageCircle, FiX } from "react-icons/fi"; // Import icons
 
 function Editor() {
-  const { user, logout } = useAuth();
+  const { user, logout, token } = useAuth();
   const navigate = useNavigate();
   const [files, setFiles] = useState([]);
   const [currentFile, setCurrentFile] = useState(null);
@@ -20,6 +23,8 @@ function Editor() {
   const [showModal, setShowModal] = useState(false);
   const [newFileName, setNewFileName] = useState("");
   const [newFileType, setNewFileType] = useState("javascript");
+
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   const api = axios.create({
     baseURL: import.meta.env.VITE_BACKEND_URL,
@@ -129,7 +134,11 @@ function Editor() {
       setNewFileName("");
       setNewFileType("javascript");
     } catch (error) {
-      alert("Error creating file", error.message);
+      toast.error(`Error creating file: ${error.message}`, {
+        position: "top-center",
+        autoClose: 2000,
+        theme: "colored",
+      });
     }
   };
 
@@ -155,7 +164,11 @@ function Editor() {
         transition: Zoom,
       });
     } catch (error) {
-      alert("Error saving file", error.message);
+      toast.error(`Error saving file: ${error.message}`, {
+        position: "top-center",
+        autoClose: 2000,
+        theme: "colored",
+      });
     }
   };
 
@@ -174,7 +187,52 @@ function Editor() {
         );
       }
     } catch (error) {
-      alert("Error deleting file", error.message);
+      toast.error(`Error deleting file: ${error.message}`, {
+        position: "top-center",
+        autoClose: 2000,
+        theme: "colored",
+      });
+    }
+  };
+
+  // Full implementation of updateFile function
+  const updateFile = async (fileId, updates) => {
+    try {
+      // First make the API call to update the file
+      const response = await api.put(`/files?id=${fileId}`, updates);
+
+      // Update the files array with the updated file
+      setFiles((prevFiles) =>
+        prevFiles.map((file) =>
+          file._id === fileId ? { ...file, ...updates } : file
+        )
+      );
+
+      // If the current file is the one being updated, update that as well
+      if (currentFile && currentFile._id === fileId) {
+        setCurrentFile((prevFile) => ({ ...prevFile, ...updates }));
+      }
+
+      toast.success("File updated successfully", {
+        position: "top-center",
+        autoClose: 700,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Zoom,
+      });
+
+      return response.data;
+    } catch (error) {
+      toast.error(`Error updating file: ${error.message}`, {
+        position: "top-center",
+        autoClose: 2000,
+        theme: "colored",
+      });
+      throw error;
     }
   };
 
@@ -205,7 +263,7 @@ function Editor() {
   };
 
   return (
-    <div className="h-screen flex bg-gray-100">
+    <div className="h-screen flex bg-gray-100 relative">
       <Sidebar
         user={user}
         files={files}
@@ -216,6 +274,7 @@ function Editor() {
         navigate={navigate}
         setShowModal={setShowModal}
         deleteFile={deleteFile}
+        updateFile={updateFile}
       />
       <div className="flex-1 flex flex-col">
         {currentFile ? (
@@ -246,6 +305,27 @@ function Editor() {
           </div>
         )}
       </div>
+      <button
+        onClick={() => setIsChatOpen(!isChatOpen)}
+        className="fixed bottom-4 right-4 bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 transition flex"
+      >
+        <FiMessageCircle size={28} />
+      </button>
+
+      {/* Chat Box */}
+      {isChatOpen && (
+        <div className="fixed bottom-16 right-4 w-[520px] bg-white shadow-lg rounded-lg ">
+          <div className="flex justify-between items-center p-3 bg-blue-600 text-white rounded-t-lg">
+            <span>Private Chat</span>
+            <button onClick={() => setIsChatOpen(false)}>
+              <FiX size={20} />
+            </button>
+          </div>
+          <div className="h-[500px] overflow-y-auto">
+            <PrivateChat token={token} userId={user.user.id} />
+          </div>
+        </div>
+      )}
       {showModal && (
         <Modal
           setShowModal={setShowModal}
