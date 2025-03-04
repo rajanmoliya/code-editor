@@ -3,13 +3,11 @@ import { createServer } from "http";
 import dotenv from "dotenv";
 import cors from "cors";
 import jwt from "jsonwebtoken";
-import File from "./models/File.js";
 import signup from "./api/auth/signup.js";
 import login from "./api/auth/login.js";
 import filesIndex from "./api/files/index.js";
 import execute from "./api/execute.js";
 import health from "./api/health.js";
-import User from "./models/User.js";
 import connectDB from "./db.js";
 import { WebSocket, WebSocketServer } from "ws";
 

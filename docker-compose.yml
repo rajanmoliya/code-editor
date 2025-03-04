@@ -8,9 +8,9 @@ services:
       - MONGO_URI=${MONGO_URI}
     volumes:
       - ./server:/usr/src/server
-      - ./temp:/usr/src/server/temp
-    depends_on:
-      - mongo
+      - ./server/temp:/usr/src/server/temp
+    # depends_on:
+    #   - mongo
 
   frontend:
     build:
@@ -19,14 +19,13 @@ services:
       - "5173:80"
     depends_on:
       - backend
+#   mongo:
+#     image: mongo:latest
+#     container_name: mongodb
+#     ports:
+#       - "27017:27017"
+#     volumes:
+#       - mongodb-data:/data/db
 
-  mongo:
-    image: mongo:latest
-    container_name: mongodb
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongodb-data:/data/db
-
-volumes:
-  mongodb-data:
+# volumes:
+#   mongodb-data:
