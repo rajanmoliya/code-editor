@@ -4,28 +4,27 @@ import Editor from "@monaco-editor/react";
 function MonacoEditorWrapper({ currentFile, setCurrentFile }) {
   const editorRef = useRef(null);
 
-  // This useEffect will handle focusing the editor when currentFile changes
+  // Focus editor when file changes
   useEffect(() => {
     if (editorRef.current && currentFile) {
-      // Focus the editor
       editorRef.current.focus();
     }
   }, [currentFile]);
 
   const handleEditorDidMount = (editor) => {
     editorRef.current = editor;
-    // Focus editor immediately after mounting
     editor.focus();
   };
 
   const handleEditorChange = (value) => {
-    setCurrentFile({ ...currentFile, content: value });
+    setCurrentFile((prev) => ({ ...prev, content: value }));
   };
 
   return (
-    <div className="flex-1">
+    <div className="flex-1 h-full w-full flex flex-col">
       <Editor
         height="100%"
+        width="100%"
         theme="vs-dark"
         path={currentFile?.name}
         defaultLanguage={currentFile?.language}
@@ -34,10 +33,17 @@ function MonacoEditorWrapper({ currentFile, setCurrentFile }) {
         onMount={handleEditorDidMount}
         options={{
           minimap: { enabled: false },
-          fontSize: 16,
+          fontSize: 17,
           wordWrap: "on",
+          formatOnPaste: true,
+          smoothScrolling: true,
           automaticLayout: true,
           scrollBeyondLastLine: false,
+
+          scrollbar: {
+            verticalScrollbarSize: 8,
+            horizontalScrollbarSize: 8,
+          },
         }}
       />
     </div>

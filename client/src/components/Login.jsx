@@ -22,10 +22,7 @@ function Login() {
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/auth/login`,
-        {
-          email,
-          password,
-        }
+        { email, password }
       );
       login(response.data);
       navigate("/editor");
@@ -39,44 +36,47 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-semibold text-gray-800 text-center mb-6">
+    <div className="min-h-screen flex items-center justify-center bg-gray-900 px-4">
+      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
+        <h2 className="text-3xl font-bold text-gray-800 text-center mb-6">
           Welcome Back!
         </h2>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="relative">
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="block w-full px-4 py-2 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              placeholder="Email"
+              className="w-full px-4 py-3 border rounded-lg bg-gray-50 text-gray-700 focus:ring-2 focus:ring-blue-500 outline-none transition placeholder-gray-400"
+              placeholder="Email Address"
               required
               autoFocus
               disabled={isLoading}
             />
           </div>
-          <div>
+
+          <div className="relative">
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="block w-full px-4 py-2 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-full px-4 py-3 border rounded-lg bg-gray-50 text-gray-700 focus:ring-2 focus:ring-blue-500 outline-none transition placeholder-gray-400"
               placeholder="Password"
               required
               disabled={isLoading}
             />
           </div>
+
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition focus:ring-2 focus:ring-blue-500 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+            className="w-full flex justify-center items-center gap-2 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition focus:ring-2 focus:ring-blue-500 outline-none disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? (
               <>
                 <svg
-                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                  className="animate-spin h-5 w-5 text-white"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -102,7 +102,8 @@ function Login() {
             )}
           </button>
         </form>
-        <p className="mt-6 text-sm text-gray-600 text-center">
+
+        <p className="mt-5 text-center text-sm text-gray-600">
           Don&apos;t have an account?{" "}
           <Link to="/register" className="text-blue-600 hover:underline">
             Register

@@ -11,7 +11,7 @@ import {
   SiPhp,
 } from "react-icons/si";
 import UserProfile from "./UserProfile";
-import { FaSave, FaTimes } from "react-icons/fa";
+import { FaCheck, FaSave, FaTimes } from "react-icons/fa";
 
 function Sidebar({
   user,
@@ -164,7 +164,7 @@ function Sidebar({
   return (
     <>
       <button
-        className="absolute top-4 left-2 sm:hidden bg-gray-800 text-white p-2 rounded"
+        className="absolute top-4 px-4 left-2 sm:hidden bg-gray-800 text-white p-2 rounded"
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
       >
         ☰
@@ -179,23 +179,30 @@ function Sidebar({
         <div className="p-4 flex flex-col h-full">
           <div className="flex-1">
             <div className="flex justify-between items-center mb-4">
-              <span className="font-bold text-lg">My Files</span>
+              <span className="font-bold text-lg">MY FILES</span>
               <button
-                className="bg-green-500 px-3 py-1 rounded hover:bg-green-600"
+                className="bg-green-600 px-3 py-1 rounded hover:bg-green-700"
                 onClick={() => setShowModal(true)}
               >
                 + New
               </button>
             </div>
-            <div className="space-y-2 overflow-y-auto max-h-[80vh]">
+            <div className="border-b border-gray-700 mb-1"></div>
+            <div className="space-y-1 overflow-y-auto max-h-[80vh]">
               {files.map((file) => (
                 <div
                   key={file._id}
-                  className={`p-2 rounded ${
+                  className={`p-2 rounded cursor-pointer ${
                     currentFile?._id === file._id
-                      ? "bg-gray-700"
+                      ? "bg-gray-600"
                       : "hover:bg-gray-700"
                   }`}
+                  onClick={() => {
+                    if (editingFileId === null) {
+                      setCurrentFile(file);
+                      setIsSidebarOpen(false);
+                    }
+                  }}
                   onContextMenu={(e) => handleContextMenu(e, file)}
                 >
                   {editingFileId === file._id ? (
@@ -225,13 +232,13 @@ function Sidebar({
                         <div className="flex space-x-1">
                           <button
                             onClick={saveFileChanges}
-                            className="text-green-400 hover:text-green-300 p-1"
+                            className="text-green-400 hover:text-green-300 p-1 hover:scale-110"
                           >
-                            <FaSave />
+                            <FaCheck />
                           </button>
                           <button
                             onClick={cancelEditing}
-                            className="text-gray-400 hover:text-gray-300 p-1"
+                            className="text-gray-300 hover:text-gray-200 p-1 hover:scale-110"
                           >
                             <FaTimes />
                           </button>
@@ -239,15 +246,7 @@ function Sidebar({
                       </div>
                     </div>
                   ) : (
-                    <div
-                      className="flex items-center cursor-pointer"
-                      onClick={() => {
-                        if (editingFileId === null) {
-                          setCurrentFile(file);
-                          setIsSidebarOpen(false);
-                        }
-                      }}
-                    >
+                    <div className="flex items-center">
                       <span className="mr-2">
                         {fileTypeIconMap[file.language]}
                       </span>

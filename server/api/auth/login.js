@@ -21,7 +21,10 @@ export default async function handler(req, res) {
       { userId: user._id, name: user.name },
       process.env.JWT_SECRET
     );
-    res.json({ user: { id: user._id, email, name: user.name }, token });
+
+    user.password = undefined;
+
+    res.json({ user, token });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

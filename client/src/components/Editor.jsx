@@ -12,6 +12,7 @@ import Modal from "./Modal";
 import PrivateChat from "./PrivateChat";
 
 import { FiMessageCircle, FiX } from "react-icons/fi"; // Import icons
+import SubscriptionModal from "./SubscriptionModal ";
 
 function Editor() {
   const { user, logout, token } = useAuth();
@@ -23,6 +24,8 @@ function Editor() {
   const [showModal, setShowModal] = useState(false);
   const [newFileName, setNewFileName] = useState("");
   const [newFileType, setNewFileType] = useState("javascript");
+
+  const [isSubscriptionModalOpen, setIsSubscriptionModalOpen] = useState(false);
 
   const [isChatOpen, setIsChatOpen] = useState(false);
 
@@ -92,6 +95,13 @@ function Editor() {
   };
 
   const createFile = async () => {
+    const maxFileLimit = user?.user.subscription?.maxFiles || 3;
+
+    if (files.length >= maxFileLimit) {
+      // Open subscription modal if limit reached
+      setIsSubscriptionModalOpen(true);
+      return;
+    }
     if (!newFileName) {
       toast.error("File name is required", {
         position: "top-center",
@@ -276,6 +286,14 @@ function Editor() {
         deleteFile={deleteFile}
         updateFile={updateFile}
       />
+      <SubscriptionModal
+        isOpen={isSubscriptionModalOpen}
+        onClose={() => setIsSubscriptionModalOpen(false)}
+        onUpgrade={() => {
+          setIsSubscriptionModalOpen(false);
+        }}
+      />
+
       <div className="flex-1 flex flex-col">
         {currentFile ? (
           <>
@@ -292,16 +310,16 @@ function Editor() {
             <Output output={output} />
           </>
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center text-gray-600">
-            <p className="text-lg">Select or Create a file to start coding</p>
-            <p>
-              <button
-                className="px-4 py-2 mt-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
-                onClick={() => setShowModal(true)}
-              >
-                Create New File
-              </button>
+          <div className="flex-1 flex flex-col items-center justify-center bg-gray-700 text-center p-6 ">
+            <p className="text-xl font-semibold text-gray-100">
+              Create a file to start coding 🚀
             </p>
+            <button
+              className="px-5 py-2.5 mt-4 bg-green-600 text-white text-lg font-medium rounded-lg shadow-md hover:bg-green-700 transition-all duration-300"
+              onClick={() => setShowModal(true)}
+            >
+              + Create New File
+            </button>
           </div>
         )}
       </div>
@@ -322,7 +340,7 @@ function Editor() {
             </button>
           </div>
           <div className="h-[500px] overflow-y-auto">
-            <PrivateChat token={token} userId={user.user.id} />
+            <PrivateChat token={token} userId={user.user._id} />
           </div>
         </div>
       )}

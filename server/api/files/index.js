@@ -1,6 +1,7 @@
 import connectDB from "../../db.js";
 import File from "../../models/File.js";
 import { auth } from "../../middlewares/auth.middleware.js";
+import { checkFileCreationLimit } from "../../middlewares/checkFileCreationLimit.js";
 
 export default async function handler(req, res) {
   await connectDB();
@@ -14,9 +15,11 @@ export default async function handler(req, res) {
 
   if (req.method === "POST") {
     return auth(req, res, async () => {
-      const file = new File({ ...req.body, userId: req.user.userId });
-      await file.save();
-      res.json(file);
+      return checkFileCreationLimit(req, res, async () => {
+        const file = new File({ ...req.body, userId: req.user.userId });
+        await file.save();
+        res.json(file);
+      });
     });
   }
 

@@ -18,11 +18,7 @@ function Register() {
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/auth/signup`,
-        {
-          name,
-          email,
-          password,
-        }
+        { name, email, password }
       );
       login(response.data);
       navigate("/editor");
@@ -36,55 +32,71 @@ function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
-          Create an Account
+    <div className="min-h-screen flex items-center justify-center bg-gray-900 px-4">
+      <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
+        <h2 className="text-3xl font-bold text-gray-800 text-center mb-4">
+          Sign Up
         </h2>
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <p className="text-sm text-gray-500 text-center mb-4">
+          Join the best online code editor 🚀
+        </p>
+
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
+            {/* <label className="block text-gray-700 text-sm font-medium mb-1">
+              Full Name
+            </label> */}
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="block w-full px-4 py-2 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              placeholder="Full Name"
+              className="w-full px-4 py-3 border rounded-lg bg-gray-50 text-gray-700 focus:ring-2 focus:ring-blue-500 outline-none transition"
+              placeholder="Enter your name"
               required
-              autoFocus
               disabled={isLoading}
+              autoFocus
             />
           </div>
+
           <div>
+            {/* <label className="block text-gray-700 text-sm font-medium mb-1">
+              Email Address
+            </label> */}
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="block w-full px-4 py-2 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              placeholder="Email"
+              className="w-full px-4 py-3 border rounded-lg bg-gray-50 text-gray-700 focus:ring-2 focus:ring-blue-500 outline-none transition"
+              placeholder="Enter your email"
               required
               disabled={isLoading}
             />
           </div>
+
           <div>
+            {/* <label className="block text-gray-700 text-sm font-medium mb-1">
+              Password
+            </label> */}
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="block w-full px-4 py-2 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              placeholder="Password"
+              className="w-full px-4 py-3 border rounded-lg bg-gray-50 text-gray-700 focus:ring-2 focus:ring-blue-500 outline-none transition"
+              placeholder="Enter a secure password"
               required
               disabled={isLoading}
             />
           </div>
+
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition focus:ring-2 focus:ring-blue-500 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+            className="w-full flex justify-center items-center gap-2 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition focus:ring-2 focus:ring-blue-500 outline-none disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? (
               <>
                 <svg
-                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                  className="animate-spin h-5 w-5 text-white"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -106,11 +118,12 @@ function Register() {
                 Registering...
               </>
             ) : (
-              "Register"
+              "Create Account"
             )}
           </button>
         </form>
-        <p className="mt-6 text-center text-sm text-gray-600">
+
+        <p className="mt-5 text-center text-sm text-gray-600">
           Already have an account?{" "}
           <Link to="/login" className="text-blue-600 hover:underline">
             Log in

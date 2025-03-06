@@ -1,7 +1,9 @@
+import { MdDownload } from "react-icons/md";
+
 function EditorControls({ currentFile, saveFile, executeCode, isExecuting }) {
   return (
     <div className="bg-gray-700 text-white p-4 flex flex-wrap justify-between items-center">
-      <div className="sm:truncate sm:text-base ml-8 sm:ml-0">
+      <div className="sm:truncate sm:text-base ml-12 sm:ml-0">
         {currentFile.name}
       </div>
       <div className="flex space-x-2 mt-2 sm:mt-0">
@@ -10,9 +12,10 @@ function EditorControls({ currentFile, saveFile, executeCode, isExecuting }) {
             currentFile.content
           )}`}
           download={currentFile.name}
-          className="bg-gray-500 px-3 py-1 rounded hover:bg-gray-600"
+          className="p-2 bg-gray-600 hover:bg-gray-800 rounded-md flex items-center justify-center transition"
+          title="Download File"
         >
-          Download
+          <MdDownload className="text-white w-4 h-4" />
         </a>
         <button
           className="bg-blue-500 px-4 py-1 rounded hover:bg-blue-600"

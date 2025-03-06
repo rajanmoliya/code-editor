@@ -7,6 +7,8 @@ import signup from "./api/auth/signup.js";
 import login from "./api/auth/login.js";
 import filesIndex from "./api/files/index.js";
 import execute from "./api/execute.js";
+import subscription from "./api/subsctiption.js";
+import rzpwebhook from "./api/rzpwebhook.js";
 import health from "./api/health.js";
 import connectDB from "./db.js";
 import { WebSocket, WebSocketServer } from "ws";
@@ -109,6 +111,8 @@ app.use("/api/auth/signup", signup);
 app.use("/api/auth/login", login);
 app.use("/api/files", filesIndex);
 app.use("/api/execute", execute);
+app.use("/api/subscription", subscription);
+app.use("/api/verify", rzpwebhook);
 app.use("/api/health", health);
 
 httpServer.listen(port, () => {

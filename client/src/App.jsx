@@ -6,7 +6,6 @@ import Editor from "./components/Editor";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ProtectedRoute from "./components/ProtectedRoute";
-import PrivateChat from "./components/PrivateChat";
 
 function App() {
   return (
@@ -28,14 +27,6 @@ function App() {
             element={
               <ProtectedRoute>
                 <Navigate to="/editor" />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/chat"
-            element={
-              <ProtectedRoute>
-                <PrivateChat />
               </ProtectedRoute>
             }
           />
