@@ -140,19 +140,15 @@ const UserProfile = ({ filesCount, logout }) => {
                   {user?.user.name || "User"}
                 </h3>
                 <span className="text-xs text-gray-400 uppercase">
-                  {plan === "free" ? "Free Plan" : "Premium Plan"}
+                  {plan === "premium" ? "Premium Plan" : "Free Plan"}
                 </span>
-                {/* {plan === "premium" && (
+
+                {plan === "premium" ? (
                   <span className="text-xs text-gray-400">
                     Valid Until: {validTill}
                   </span>
-                )} */}
-                {plan === "free" ? (
-                  <span></span>
                 ) : (
-                  <span className="text-xs text-gray-400">
-                    Valid Until: {validTill}
-                  </span>
+                  <span></span>
                 )}
               </div>
             </div>
@@ -175,7 +171,16 @@ const UserProfile = ({ filesCount, logout }) => {
 
             {/* Subscription Actions */}
             <div className="mt-3 space-y-2">
-              {plan === "free" ? (
+              {plan === "premium" ? (
+                <button
+                  onClick={cancelSubscription}
+                  className="w-full py-2 px-4 bg-teal-600 rounded-md text-sm font-medium text-white 
+                            hover:bg-teal-700 active:bg-teal-800 transition-all duration-200 
+                            focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-opacity-50 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {isLoading ? "Processing..." : "Cancel Subscription"}
+                </button>
+              ) : (
                 <button
                   onClick={initiateSubscription}
                   disabled={isLoading}
@@ -184,15 +189,6 @@ const UserProfile = ({ filesCount, logout }) => {
                             focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {isLoading ? "Processing..." : "Upgrade to Premium"}
-                </button>
-              ) : (
-                <button
-                  onClick={cancelSubscription}
-                  className="w-full py-2 px-4 bg-teal-600 rounded-md text-sm font-medium text-white 
-                            hover:bg-teal-700 active:bg-teal-800 transition-all duration-200 
-                            focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-opacity-50 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {isLoading ? "Processing..." : "Cancel Subscription"}
                 </button>
               )}
             </div>
