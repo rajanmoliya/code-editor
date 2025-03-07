@@ -9,6 +9,7 @@ function Modal({
   newFileType,
   setNewFileType,
   createFile,
+  isCreatingFile,
 }) {
   const languageOptions = [
     {
@@ -72,7 +73,7 @@ function Modal({
             onClick={createFile}
             disabled={!newFileName.trim()} // Disable if input is empty
           >
-            Create
+            {isCreatingFile ? "Creating..." : "Create"}
           </button>
         </div>
 

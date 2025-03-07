@@ -1,6 +1,12 @@
 import { MdDownload } from "react-icons/md";
 
-function EditorControls({ currentFile, saveFile, executeCode, isExecuting }) {
+function EditorControls({
+  currentFile,
+  saveFile,
+  executeCode,
+  isExecuting,
+  isSaving,
+}) {
   return (
     <div className="bg-gray-700 text-white p-4 flex flex-wrap justify-between items-center">
       <div className="sm:truncate sm:text-base ml-12 sm:ml-0">
@@ -18,10 +24,16 @@ function EditorControls({ currentFile, saveFile, executeCode, isExecuting }) {
           <MdDownload className="text-white w-4 h-4" />
         </a>
         <button
-          className="bg-blue-500 px-4 py-1 rounded hover:bg-blue-600"
+          // className="bg-blue-500 px-4 py-1 rounded hover:bg-blue-600"
+          className={`px-4 py-1 rounded ${
+            isSaving
+              ? "bg-gray-500 cursor-not-allowed"
+              : "bg-blue-500 hover:bg-blue-600"
+          }`}
+          disabled={isSaving}
           onClick={saveFile}
         >
-          Save
+          {isSaving ? "Saving..." : "Save"}
         </button>
         <button
           className={`px-4 py-1 rounded ${

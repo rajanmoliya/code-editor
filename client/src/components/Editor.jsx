@@ -24,7 +24,8 @@ function Editor() {
   const [showModal, setShowModal] = useState(false);
   const [newFileName, setNewFileName] = useState("");
   const [newFileType, setNewFileType] = useState("javascript");
-
+  const [isSaving, setIsSaving] = useState(false);
+  const [isCreatingFile, setIsCreatingFile] = useState(false);
   const [isSubscriptionModalOpen, setIsSubscriptionModalOpen] = useState(false);
 
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -131,6 +132,8 @@ function Editor() {
     const fileExtension = fileExtensionMap[newFileType];
     const fullName = `${newFileName}.${fileExtension}`;
 
+    setShowModal(false);
+
     try {
       const response = await api.post("/files", {
         name: fullName,
@@ -149,11 +152,15 @@ function Editor() {
         autoClose: 2000,
         theme: "colored",
       });
+    } finally {
+      setIsCreatingFile(false);
     }
   };
 
   const saveFile = async () => {
     if (!currentFile) return;
+
+    setIsSaving(true);
 
     try {
       const response = await api.put(`/files?id=${currentFile._id}`, {
@@ -179,6 +186,8 @@ function Editor() {
         autoClose: 2000,
         theme: "colored",
       });
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -302,6 +311,7 @@ function Editor() {
               saveFile={saveFile}
               executeCode={executeCode}
               isExecuting={isExecuting}
+              isSaving={isSaving}
             />
             <MonacoEditorWrapper
               currentFile={currentFile}
@@ -352,6 +362,7 @@ function Editor() {
           newFileType={newFileType}
           setNewFileType={setNewFileType}
           createFile={createFile}
+          isCreatingFile={isCreatingFile}
         />
       )}
     </div>
